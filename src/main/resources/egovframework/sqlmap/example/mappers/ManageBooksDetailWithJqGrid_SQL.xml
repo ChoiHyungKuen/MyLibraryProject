@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.example.manageBooksDetail.service.impl.ManageBooksDetailMapper">
+
+	<select id="selectManageBooksDetailList" parameterType="manageBooksDetailVO" resultType="egovMap">
+		SELECT  a.ID, 
+				a.CALL_NUMBER, 
+				a.STATE, 
+				TO_CHAR(a.RETURN_TERM,'YYYY"/"MM"/"DD') AS RETURN_TERM ,
+				a.BOOK_ID
+	      FROM  (
+			SELECT  a.*,
+			        ROWNUM rnum,
+			        FLOOR((ROWNUM - 1) /#{rows} + 1) pageNumber
+		      FROM  (   SELECT  ID, 
+         						CALL_NUMBER,
+         						STATE,
+         						RETURN_TERM,
+         						BOOK_ID
+					  	FROM LIBRO_BOOKS_DETAIL
+					  	WHERE 1=1 AND BOOK_ID = #{bookId}
+				 		ORDER BY ID ASC
+					) a
+				) a
+	       WHERE  a.pageNumber = #{page}
+	    order by a.rnum
+	</select>
+	
+	<select id="selectManageBooksDetailListCnt" parameterType="manageBooksDetailVO" resultType="egovMap">
+		SELECT  count(*) totalTotCnt
+        	  , CEIL(count(*) / #{rows}) totalPage
+		  FROM  LIBRO_BOOKS_Detail
+		 WHERE  1=1 AND BOOK_ID = #{bookId}
+	  ORDER BY  ID ASC
+	</select>
+ 	
+ 	<insert id="insertManageBooksDetailJqGridList" parameterType="map">
+	<selectKey resultType="String" keyProperty="id" order="BEFORE">
+		SELECT NVL(MAX(ID),0)+1 
+		FROM LIBRO_BOOKS_DETAIL
+	</selectKey>
+	INSERT INTO LIBRO_BOOKS_DETAIL
+	(ID,
+	 CALL_NUMBER,
+	 STATE,
+	 RETURN_TERM,
+	 BOOK_ID)
+	VALUES
+	(#{id},
+	#{callNumber},
+	#{state},
+	TO_DATE(#{returnTerm,jdbcType=DATE}, 'YYYY/MM/DD hh24:mi:ss'),        
+	#{bookId})
+	</insert>
+	
+	<update id="updateManageBooksDetailJqGridList" parameterType="map">
+	UPDATE LIBRO_BOOKS_DETAIL
+	SET CALL_NUMBER = #{callNumber},
+		STATE = #{state},
+		RETURN_TERM = TO_DATE(#{returnTerm,jdbcType=DATE}, 'YYYY/MM/DD hh24:mi:ss'),   
+		BOOK_ID  = #{bookId}
+	WHERE ID = #{id}	
+	</update>
+	
+	<delete id ="deleteManageBooksDetailJqGridList" parameterType="map">
+	DELETE FROM LIBRO_BOOKS_DETAIL WHERE ID=#{id}
+	</delete> 
+</mapper>

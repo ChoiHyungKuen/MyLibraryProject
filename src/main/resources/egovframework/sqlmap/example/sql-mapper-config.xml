@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <typeAliases>
+		<typeAlias alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+		<typeAlias alias="searchVO" type="egovframework.example.sample.service.SampleDefaultVO"/>
+		<typeAlias alias="sampleVO" type="egovframework.example.sample.service.SampleVO"/>
+		<typeAlias alias="manageLibroInformationVO" type="egovframework.example.manageLibroInformation.service.ManageLibroInformationVO"/>
+		<typeAlias alias="manageMenuVO" type="egovframework.example.manageMenu.service.ManageMenuVO"/>
+		<typeAlias alias="manageInfoBoardVO" type="egovframework.example.manageInfoBoard.service.ManageInfoBoardVO"/>
+		<typeAlias alias="manageBooksVO" type="egovframework.example.manageBooks.service.ManageBooksVO"/>
+		<typeAlias alias="manageBooksDetailVO" type="egovframework.example.manageBooksDetail.service.ManageBooksDetailVO"/>
+    	<typeAlias alias="memberVO" type="egovframework.example.member.service.MemberVO"/>
+    	<typeAlias alias="loginVO" type="egovframework.example.login.service.LoginVO"/> 
+    	<typeAlias alias="bookPagingVO" type="egovframework.example.book.service.BookPagingVO"/> 
+    	<typeAlias alias="bookSearchPagingVO" type="egovframework.example.book.service.BookSearchPagingVO"/> 
+    	<typeAlias alias="boardPagingVO" type="egovframework.example.board.service.BoardPagingVO"/> 
+    </typeAliases><!-- 
+	<typeHandlers>
+		<typeHandler handler="egovframework.example.config.AuthorityTypeHandler" jdbcType="VARCHAR" javaType="String"  />
+	</typeHandlers> -->
+</configuration>

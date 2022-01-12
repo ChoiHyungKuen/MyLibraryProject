@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.example.book.service.impl.BookMapper">
+	
+   <select id ="selectBookList" resultType="egovMap">
+      SELECT
+      	ID,   
+      	TITLE, 
+        AUTHOR,
+        PUBLISHER,
+        TO_CHAR(PUBLISH_DATE,'YYYY"년"MM"월"DD"일"') PUBLISH_DATE,
+        CLASSIFICATION,
+        IMG_DES,
+        BOOK_PAGE
+      FROM LIBRO_BOOKS
+      ORDER BY ID
+   </select>
+   <select id ="selectBookByType" parameterType="hashmap" resultType="egovMap">
+      SELECT
+      	ID,   
+      	TITLE, 
+        AUTHOR,
+        PUBLISHER,
+        TO_CHAR(PUBLISH_DATE,'YYYY"년"MM"월"DD"일"') PUBLISH_DATE,
+        CLASSIFICATION,
+        IMG_DES,
+        BOOK_PAGE
+      FROM LIBRO_BOOKS
+      <if test="type != null and keyword!=''">
+			<choose>
+                <when test="type.equals('제목')">
+                    WHERE TITLE LIKE '%' || #{keyword} || '%'
+                </when>
+                <when test="type.equals('작가')">
+                    WHERE AUTHOR LIKE '%' ||  #{keyword} || '%'
+                </when>
+                <when test="type.equals('출판사')">
+                    WHERE PUBLISHER LIKE '%' ||  #{keyword} || '%'
+                </when>
+                <otherwise>
+                    WHERE CLASSIFICATION = #{keyword} 
+				</otherwise>
+			</choose>
+       </if>
+      ORDER BY ID
+   </select>
+      <select id ="selectBookContent" parameterType="String" resultType="egovMap">
+      SELECT
+      	ID,   
+      	TITLE, 
+        AUTHOR,
+        PUBLISHER,
+        TO_CHAR(PUBLISH_DATE,'YYYY"년"MM"월"DD"일"') PUBLISH_DATE,
+        CLASSIFICATION,
+        CONTENT,
+        IMG_DES,
+        BOOK_PAGE
+      FROM LIBRO_BOOKS
+      WHERE ID = #{_parameter}
+      ORDER BY ID
+   </select>
+   
+   <select id ="selectBookDetailContentList" parameterType="String" resultType="egovMap">
+  		SELECT d.id book_detail_id, 
+  			   d.call_number call_number,
+  			   d.state state,  TO_CHAR(d.return_term,'YYYY"년"MM"월"DD"일"') return_term
+		FROM LIBRO_BOOKS b
+		INNER JOIN LIBRO_BOOKS_DETAIL d 
+		ON b.id = d.book_id
+		WHERE 1 = 1
+		AND (d.book_id = #{_parameter})
+   </select>
+   
+   <select id ="selectBookDetailRentInfoList" parameterType="String" resultType="egovMap">
+		SELECT r.id id, r.member_id rent_member_id, r.rent_book_detail_id rent_book_detail_id
+		FROM
+			(SELECT d.*
+			FROM LIBRO_BOOKS_DETAIL d
+			INNER JOIN LIBRO_BOOKS b
+			on d.book_id = b.id
+			WHERE b.id = #{_parameter}) k
+		INNER JOIN LIBRO_RENT r
+		on k.id = r.rent_book_detail_id
+   </select>
+   <select id ="selectPriorityReserveInfo" parameterType="hashmap" resultType="egovMap">		
+		SELECT b.title title, v.id reserve_id, v.reserve_member_id reserve_member_id, v.rent_id rent_id, r.rent_book_detail_id book_detail_id
+   		FROM LIBRO_RESERVE v 
+   			 INNER JOIN LIBRO_RENT r
+      		 ON v.rent_id = r.id
+           INNER JOIN LIBRO_BOOKS_DETAIL d
+           ON d.id = r.rent_book_detail_id
+           INNER JOIN LIBRO_BOOKS b
+           ON b.id = d.book_id
+   		WHERE v.RANK = 1 AND v.RENT_ID = #{rentId}
+   </select>
+   <select id ="selectBookDetailReserveInfoList" parameterType="String" resultType="egovMap">		
+   		SELECT s.rent_book_detail_id reserve_book_detail_id, v.id reserve_id, v.reserve_member_id reserve_member_id, v.rank rank
+    		FROM
+    			(SELECT r.*
+				FROM
+					(SELECT d.*
+					FROM LIBRO_BOOKS_DETAIL d
+					INNER JOIN LIBRO_BOOKS b
+					on d.book_id = b.id
+					WHERE b.id = #{_parameter}) k
+				INNER JOIN LIBRO_RENT r
+				on k.id = r.rent_book_detail_id
+    		) s 
+			INNER JOIN LIBRO_RESERVE v
+			on s.id = v.rent_id
+   </select>
+   <select id ="selectRentBookList" parameterType="String" resultType="egovMap">
+		SELECT b.title title, b.title test_title,b.publisher publisher, TO_CHAR(b.publish_date,'YYYY"년"MM"월"DD"일"') publish_date,
+			   b.author author, b.classification classification, b.img_des img_des,
+			   b.book_page book_page, d.call_number call_number, TO_CHAR(d.return_term,'YYYY"년"MM"월"DD"일"') return_term,
+			   r.id id, r.member_id member_id, r.rent_book_detail_id rent_book_detail_id,
+			   TO_CHAR(r.rent_date,'YYYY"년"MM"월"DD"일"') rent_date, TO_CHAR(d.return_term,'YYYY-MM-DD') other_type_return_term,
+			   r.rent_state rent_state, r.renew_cnt renew_cnt 
+		FROM 
+    	(
+    	  (
+    	    (
+    	      SELECT *
+    	      FROM LIBRO_RENT
+    	      WHERE MEMBER_ID = #{_parameter}
+    	    ) r
+    	    
+    	    INNER JOIN LIBRO_BOOKS_DETAIL d 
+    	    ON r.rent_book_detail_id = d.id
+    	    
+    	  ) INNER JOIN LIBRO_BOOKS b 
+    	    ON d.book_id = b.id
+   		)
+    	WHERE d.book_id = b.id
+   </select>
+   
+   <select id ="selectReserveBookList" parameterType="String" resultType="egovMap">
+		SELECT b.title title, b.title test_title,b.publisher publisher, TO_CHAR(b.publish_date,'YYYY"년"MM"월"DD"일"') publish_date,
+			   b.author author, b.classification classification, b.img_des img_des,
+			   b.book_page book_page, d.call_number call_number, TO_CHAR(d.return_term,'YYYY"년"MM"월"DD"일"') return_term,
+			   r.id id, r.member_id member_id, r.rent_book_detail_id rent_book_detail_id,
+			   TO_CHAR(r.rent_date,'YYYY"년"MM"월"DD"일"') rent_date, TO_CHAR(r.rent_date,'YYYY-MM-DD') new_rent_date, 
+			   r.rent_state rent_state, r.renew_cnt renew_cnt, v.id reserve_id ,v.rank rank, v.rent_id rent_id 
+		FROM 
+    	(
+    	  (
+          	(
+          	  (
+          	   SELECT *
+          	   FROM LIBRO_RESERVE
+          	   WHERE RESERVE_MEMBER_ID = #{_parameter}
+          	  ) v
+          	  INNER JOIN LIBRO_RENT r 
+          	  ON v.rent_id = r.id
+          	 ) 
+    	  	  INNER JOIN LIBRO_BOOKS_DETAIL d 
+    	  	  ON r.rent_book_detail_id = d.id
+    	  	) INNER JOIN LIBRO_BOOKS b 
+    	    ON d.book_id = b.id
+   		) 
+    	WHERE d.book_id = b.id
+   	</select>
+   	
+   	<update id="updateBookState" parameterType="hashmap">
+	UPDATE LIBRO_BOOKS
+	SET RENT_CNT = RENT_CNT + 1
+	WHERE TITLE = #{title}	
+	</update>
+	
+   	<update id="updateBookDetailState" parameterType="hashmap">
+	UPDATE LIBRO_BOOKS_DETAIL
+	SET STATE = #{state},
+		RETURN_TERM = TO_DATE(#{returnTerm, jdbcType=DATE}, 'YYYY/MM/DD hh24:mi:ss')
+	WHERE ID = #{bookDetailId}	
+	</update>
+	
+   	<update id="updateReserveBook" parameterType="hashmap">
+	UPDATE LIBRO_RESERVE
+	SET RANK = RANK-1
+	WHERE RENT_ID = #{rentId}	
+	</update>
+	
+	<update id="updateRentBook" parameterType="hashmap">
+	UPDATE LIBRO_RENT
+	SET MEMBER_ID = #{memberId},
+		RENT_STATE = #{state},
+		RENT_DATE = TO_DATE(#{rentDate}, 'YYYY/MM/DD hh24:mi:ss')
+	WHERE ID = #{rentId}	
+	</update>
+	
+	<insert id="insertRentBook" parameterType="hashmap">
+	<selectKey resultType="String" keyProperty="id" order="BEFORE">
+		SELECT NVL(MAX(ID),0)+1 
+		FROM LIBRO_RENT
+	</selectKey>
+	INSERT INTO LIBRO_RENT
+	(ID,
+	 MEMBER_ID,
+	 RENT_BOOK_DETAIL_ID,
+	 RENT_DATE)
+	VALUES
+	(#{id},
+	#{memberId},
+	#{bookDetailId},        
+	TO_DATE(#{rentDate}, 'YYYY/MM/DD hh24:mi:ss'))
+	</insert>
+	
+   	<update id="updateRenewState" parameterType="hashmap">
+	UPDATE LIBRO_RENT
+	SET RENEW_CNT = RENEW_CNT + 1,
+		RENT_STATE = #{rentState}
+	WHERE MEMBER_ID = #{memberId} AND RENT_BOOK_DETAIL_ID = #{bookDetailId}	
+	</update>
+	
+	<select id="selectBookTitle" parameterType="String" resultType="java.lang.String">
+		SELECT b.title title
+		FROM LIBRO_BOOKS b
+    	INNER JOIN LIBRO_BOOKS_DETAIL d
+    	ON b.id = d.book_id
+		WHERE 1 = 1
+		AND d.id = #{_parameter} 
+	</select>	
+	
+	<select id="selectRentBookCnt" parameterType="String" resultType="java.lang.Integer">
+		SELECT COUNT(*)  RENT_BOOK_CNT
+		FROM LIBRO_RENT 
+		WHERE 1 = 1
+		AND MEMBER_ID = #{_parameter} 
+	</select>	
+	
+	<select id="selectReserveBookCnt" parameterType="String" resultType="java.lang.Integer">
+		SELECT COUNT(*)  RESERVE_BOOK_CNT
+		FROM LIBRO_RESERVE 
+		WHERE 1 = 1
+		AND RENT_ID = #{_parameter} 
+	</select>	
+	
+	<insert id="insertReserveBook" parameterType="hashmap">
+	<selectKey resultType="String" keyProperty="id" order="BEFORE">
+		SELECT NVL(MAX(ID),0)+1 
+		FROM LIBRO_RESERVE
+	</selectKey>
+	INSERT INTO LIBRO_RESERVE
+	(ID,
+	 RENT_ID,
+	 RESERVE_MEMBER_ID,
+	 RANK)
+	VALUES
+	(#{id},
+	#{rentId},
+	#{reserveMemberId},
+	#{rank})
+	</insert>
+	
+	<insert id="insertNotification" parameterType="hashmap">
+	<selectKey resultType="String" keyProperty="id" order="BEFORE">
+		SELECT NVL(MAX(ID),0)+1 
+		FROM LIBRO_NOTIFICATION
+	</selectKey>
+	INSERT INTO LIBRO_NOTIFICATION
+	(ID,
+	 MEMBER_ID,
+	 CONTENT)
+	VALUES
+	(#{id},
+	#{userId},
+	#{content})
+	</insert>
+	
+	<delete id ="deleteRentBook" parameterType="hashmap">
+	DELETE FROM LIBRO_RENT WHERE ID=#{rentId}
+	</delete> 
+	
+	<delete id ="deleteReserveBook" parameterType="hashmap">
+	DELETE FROM LIBRO_RESERVE WHERE ID=#{reserveId}
+	</delete> 
+	
+	<!--스케줄러에서 사용하는 것들 -->
+	<select id="selectTodayRentUserList" parameterType="String" resultType="egovMap">		
+	SELECT r.id rent_id, r.rent_book_detail_id book_detail_id
+	FROM 
+		(SELECT * 
+		FROM
+		LIBRO_BOOKS_DETAIL 
+		WHERE
+ 		TO_CHAR(return_term, 'yyyy-mm-dd')= #{_parameter}) d
+	INNER JOIN LIBRO_RENT r
+	ON d.id = r.rent_book_detail_id
+	</select>
+	
+	<!--페이징에서 사용하는 것들 -->
+	<select id="selectBookPagingList" parameterType="bookPagingVO" resultType="egovMap">
+	  
+      SELECT 
+      	a.ID,   
+      	a.TITLE, 
+        a.AUTHOR,
+        a.PUBLISHER,
+        TO_CHAR(a.PUBLISH_DATE,'YYYY"년"MM"월"DD"일"') PUBLISH_DATE,
+        a.CLASSIFICATION,
+        a.CONTENT,
+        a.IMG_DES,
+        a.BOOK_PAGE
+         FROM (
+         SELECT a.*,
+            ROWNUM rnum,
+            FLOOR((ROWNUM - 1) / #{rows} + 1) pageNumber
+         FROM (
+            SELECT *
+            FROM LIBRO_BOOKS
+   			<choose>
+   				<when test="order != null and order=='best'">
+   					ORDER BY RENT_CNT DESC
+   				</when>
+   				<when test="order != null and order=='new'">
+   					ORDER BY CREATED_DATE DESC
+   				</when>
+   				<otherwise>
+            		ORDER BY ID ASC
+   				</otherwise>
+   			</choose>         
+         )a
+      )a
+         WHERE a.pageNumber = #{page}
+         order by a.rnum
+   	</select>
+   	<select id="selectBookPagingListCnt" parameterType="bookPagingVO" resultType="egovMap">
+   	SELECT  count(*) TOTAL_CNT,
+           CEIL(count(*) / #{rows}) TOTAL_PAGE
+     FROM  LIBRO_BOOKS
+     WHERE  1=1
+       ORDER BY  ID ASC
+   	</select>
+   
+	<select id="selectBookSearchPagingList" parameterType="bookSearchPagingVO" resultType="egovMap">
+	  
+      SELECT 
+      	a.ID,   
+      	a.TITLE, 
+        a.AUTHOR,
+        a.PUBLISHER,
+        TO_CHAR(a.PUBLISH_DATE,'YYYY"년"MM"월"DD"일"') PUBLISH_DATE,
+        a.CLASSIFICATION,
+        a.CONTENT,
+        a.IMG_DES,
+        a.BOOK_PAGE
+         FROM (
+         SELECT a.*,
+            ROWNUM rnum,
+            FLOOR((ROWNUM - 1) / #{rows} + 1) pageNumber
+         FROM (
+            SELECT *
+            FROM LIBRO_BOOKS
+            <if test="type != null and keyword!=''">
+			<choose>
+                <when test="type.equals('제목')">
+                    WHERE TITLE LIKE '%' || #{keyword} || '%'
+                </when>
+                <when test="type.equals('저자')">
+                    WHERE AUTHOR LIKE '%' ||  #{keyword} || '%'
+                </when>
+                <when test="type.equals('출판사')">
+                    WHERE PUBLISHER LIKE '%' ||  #{keyword} || '%'
+                </when>
+                <otherwise>
+                    WHERE CLASSIFICATION = #{keyword} 
+				</otherwise>
+			</choose>
+       		</if>
+            ORDER BY ID ASC
+         )a
+      )a
+         WHERE a.pageNumber = #{page}
+         order by a.rnum
+   	</select>
+   	<select id="selectBookSearchPagingListCnt" parameterType="bookSearchPagingVO" resultType="egovMap">
+   	SELECT  count(*) TOTAL_CNT,
+           CEIL(count(*) / #{rows}) TOTAL_PAGE
+    FROM  LIBRO_BOOKS
+     <if test="type != null and keyword!=''">
+		<choose>
+        	<when test="type.equals('제목')">
+                    WHERE TITLE LIKE '%' || #{keyword} || '%'
+            </when>
+            <when test="type.equals('저자')">
+                    WHERE AUTHOR LIKE '%' ||  #{keyword} || '%'
+            </when>
+            <when test="type.equals('출판사')">
+                    WHERE PUBLISHER LIKE '%' ||  #{keyword} || '%'
+            </when>
+            <otherwise>
+                    WHERE CLASSIFICATION = #{keyword} 
+			</otherwise>
+		</choose>
+     </if>
+    ORDER BY  ID ASC
+   	</select>
+   
+   
+	<!--리뷰에서 사용하는 것들 -->
+	
+   	<select id="selectBookReviewList" parameterType="String" resultType="egovMap">
+   	SELECT  r.id id, r.content content, r.score score,
+        	TO_CHAR(r.created_date,'YYYY"년"MM"월"DD"일"') created_date , m.member_id member_id, 
+        	m.name name
+	FROM  LIBRO_REVIEW r 
+	INNER JOIN LIBRO_MEMBER m 
+	ON r.member_id = m.member_id
+	WHERE r. book_id = #{_parameter}
+	ORDER BY r.created_date DESC
+   	</select>
+   	
+	<insert id="insertReviewInfo" parameterType="hashmap">
+	<selectKey resultType="String" keyProperty="id" order="BEFORE">
+	SELECT NVL(MAX(ID),0)+1 
+	FROM LIBRO_REVIEW
+	</selectKey>
+	INSERT INTO LIBRO_REVIEW
+	(ID,
+	 CONTENT,
+	 SCORE,
+	 BOOK_ID,
+	 MEMBER_ID)
+	VALUES
+	(#{id},
+	#{ratingContent},
+	#{ratingScore}, 
+	#{bookId},       
+	#{userId})
+	</insert>
+   	
+   	<update id="updateReviewInfo" parameterType="hashmap">
+	UPDATE LIBRO_REVIEW
+	SET CONTENT = #{ratingContent},
+		SCORE = #{ratingScore},
+		CREATED_DATE = SYSDATE
+	WHERE ID = #{reviewId} 
+	</update>
+	
+	<delete id ="deleteReviewInfo" parameterType="hashmap">
+	DELETE FROM LIBRO_REVIEW
+	WHERE ID = #{reviewId}
+	</delete> 
+	
+</mapper>

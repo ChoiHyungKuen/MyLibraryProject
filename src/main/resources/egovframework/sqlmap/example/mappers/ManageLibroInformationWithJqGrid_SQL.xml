@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.example.manageLibroInformation.service.impl.ManageLibroInformationMapper">
+
+	<select id="selectManageLibroInformationList" parameterType="ManageLibroInformationVO" resultType="egovMap">
+		SELECT  a.*
+	      FROM  (
+			SELECT  a.*,
+			        ROWNUM rnum,
+			        FLOOR((ROWNUM - 1) /#{rows} + 1) pageNumber
+		      FROM  (   SELECT  ID,
+		      					TITLE,
+		      					CONTENT,
+		      					EXPLANATION
+					  	FROM LIBRO_INFORMATION
+				 		ORDER BY ID ASC
+					) a
+				) a
+	       WHERE  a.pageNumber = #{page}
+	    order by a.rnum
+	</select>
+	
+	<select id="selectManageLibroInformationListCnt" parameterType="ManageLibroInformationVO" resultType="egovMap">
+		SELECT  count(*) totalTotCnt
+        	  , CEIL(count(*) / #{rows}) totalPage
+		  FROM  LIBRO_INFORMATION
+		 WHERE  1=1
+	  ORDER BY  ID ASC
+	</select>
+ 	
+ 	<insert id="insertManageLibroInformationJqGridList" parameterType="map">
+	<selectKey resultType="String" keyProperty="id" order="BEFORE">
+		SELECT NVL(MAX(ID),0)+1 
+		FROM LIBRO_INFORMATION
+	</selectKey>
+	INSERT INTO LIBRO_INFORMATION
+	(ID,
+	 TITLE,
+	 CONTENT,
+	 EXPLANATION)
+	VALUES
+	(#{id},
+	#{title},
+	#{content},        
+	#{explanation, jdbcType=VARCHAR})
+	</insert>
+	
+	<update id="updateManageLibroInformationJqGridList" parameterType="map">
+	UPDATE LIBRO_INFORMATION
+	SET TITLE = #{title},
+		CONTENT = #{content},
+		EXPLANATION = #{explanation, jdbcType=VARCHAR}
+	WHERE ID = #{id}	
+	</update>
+	<delete id ="deleteManageLibroInformationJqGridList" parameterType="map">
+	DELETE FROM LIBRO_INFORMATION WHERE ID=#{id}
+	</delete> 
+</mapper>

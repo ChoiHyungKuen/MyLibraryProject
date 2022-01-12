@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.example.member.service.impl.MemberMapper">
+	
+
+	<insert id="insertLibroMemberInfo" parameterType="memberVO">
+	INSERT INTO LIBRO_MEMBER
+	(MEMBER_ID,
+	UNIQ_ID,
+	PASSWORD,
+	NAME,
+	EMAIL_ID,
+	EMAIL_ADDRESS,
+	PHONE,
+	POST_CODE,
+	ROAD_ADDRESS,
+	JIBUN_ADDRESS)
+	VALUES
+	(#{memberId},
+	#{uniqId},
+	#{password},
+	#{name},
+	#{emailId},
+	#{emailAddress},
+	#{phone},
+	#{postCode},
+	#{roadAddress, jdbcType=VARCHAR},
+	#{jibunAddress, jdbcType=VARCHAR})
+	</insert>
+	
+	
+	<select id="selectDuplIdCnt" parameterType="String" resultType="java.lang.Integer">
+		SELECT COUNT(*) 
+		FROM LIBRO_MEMBER
+		WHERE MEMBER_ID = #{_parameter}
+	</select>
+	
+	<select id="selectMemberInfoById" parameterType="String" resultType="EgovMap">
+		SELECT MEMBER_ID, 
+			   NAME,
+			   EMAIL_ID,
+			   EMAIL_ADDRESS,
+			   PHONE,
+			   POST_CODE,
+			   ROAD_ADDRESS,
+			   JIBUN_ADDRESS
+		FROM LIBRO_MEMBER
+		WHERE MEMBER_ID = #{_parameter}
+	</select>
+   	
+   	<update id="updateMemberInfo" parameterType="hashmap">
+	UPDATE LIBRO_MEMBER
+	SET PASSWORD = #{password},
+		EMAIL_ID = #{emailId},
+		EMAIL_ADDRESS = #{emailAddress},
+		PHONE = #{phone},
+		POST_CODE = #{postCode},
+		ROAD_ADDRESS = #{roadAddress, jdbcType=VARCHAR},
+		JIBUN_ADDRESS = #{jibunAddress, jdbcType=VARCHAR}
+	WHERE MEMBER_ID = #{changeMemberId}	
+	</update>
+	
+</mapper>

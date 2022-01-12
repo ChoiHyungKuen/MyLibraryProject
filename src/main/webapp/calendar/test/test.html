@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8' />
+<link href='../fullcalendar.css' rel='stylesheet' />
+<link href='../fullcalendar.min.css' rel='stylesheet' />
+<link href='../fullcalendar.print.min.css' rel='stylesheet' media='print' />
+<script src='../lib/jquery.min.js'></script>
+<script src='../lib/moment.min.js'></script>
+<script src='../fullcalendar.min.js'></script>
+
+<script src='../locale/locale-all.js'></script>
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        jQuery("#calendar").fullCalendar({
+         lang : "ko",
+header: {
+left: "prev,next today",
+center: "title",
+right: "month,basicWeek,basicDay"
+},
+
+    views: {
+
+        month: { // name of view
+            titleFormat: "YYYY년 MMMM"
+            // other view-specific options here
+        },
+         week: { // name of view
+            titleFormat:  "YYYY년 MMMM D(yyyy)일 "
+            // other view-specific options here
+        },
+         day: { // name of view
+            titleFormat: "YYYY년 MMM D일 dddd"
+            // other view-specific options here
+        }
+
+    },   
+   allDayDefault: false,
+   defaultView: "month",
+   editable: false,
+   monthNames: ["1월","2월","3월","4월","5월","6월","7월","8월","9월","10월","11월","12월"],
+   monthNamesShort: ["1월","2월","3월","4월","5월","6월","7월","8월","9월","10월","11월","12월"],
+   dayNames: ["일요일","월요일","화요일","수요일","목요일","금요일","토요일"],
+   dayNamesShort: ["일","월","화","수","목","금","토"],
+   buttonText: {
+   today : "오늘",
+   month : "월별",
+   week : "주별",
+   day : "일별",
+   },
+   timeFormat : "HH:mm",
+});
+
+    });
+</script>
+<body>
+    <div id="calendar"></div>
+</body>
+
+
+</html>

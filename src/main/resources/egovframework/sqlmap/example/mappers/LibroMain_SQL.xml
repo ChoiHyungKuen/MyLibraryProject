@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.example.main.service.impl.MainMapper">
+	
+	<select id="selectLibroBookCnt" resultType="java.lang.Integer">
+		SELECT COUNT(*) TOTAL_BOOK
+		FROM LIBRO_BOOKS
+	</select>
+	
+	<select id="selectBestThreeBookList" resultType="egovMap">
+      SELECT * 
+      FROM (SELECT *
+      		FROM LIBRO_BOOKS
+      		ORDER BY RENT_CNT DESC)
+      WHERE ROWNUM <![CDATA[<=]]>  3
+   	</select>
+   	
+	<select id="selectLibroInformationList" resultType="egovMap">
+      SELECT * 
+      FROM LIBRO_INFORMATION
+   	</select>
+   	
+</mapper>

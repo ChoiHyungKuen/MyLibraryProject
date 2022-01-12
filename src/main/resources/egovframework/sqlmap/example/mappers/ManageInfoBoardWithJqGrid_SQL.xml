@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.example.manageInfoBoard.service.impl.ManageInfoBoardMapper">
+
+	<select id="selectManageInfoBoardList" parameterType="ManageInfoBoardVO" resultType="egovMap">
+		SELECT  a.NO, 
+         		a.TITLE,
+         		a.CONTENT,
+         		a.IMG_DES,
+				TO_CHAR(a.EVENT_DATE,'YYYY"/"MM"/"DD') AS EVENT_DATE,
+				TO_CHAR(a.CREATED_DATE,'YYYY"/"MM"/"DD') AS CREATED_DATE,
+         		a.TYPE,
+         		a.MEMBER_ID
+	      FROM  (
+			SELECT  a.*,
+			        ROWNUM rnum,
+			        FLOOR((ROWNUM - 1) /#{rows} + 1) pageNumber
+		      FROM  (   SELECT  NO, 
+         						TITLE,
+         						CONTENT,
+         						IMG_DES,
+         						EVENT_DATE,
+         						CREATED_DATE,
+         						TYPE,
+         						MEMBER_ID
+					  	 FROM LIBRO_INFO_BOARD
+				 		ORDER BY NO ASC
+					) a
+				) a
+	       WHERE  a.pageNumber = #{page}
+	    order by a.rnum
+	</select>
+	
+	<select id="selectManageInfoBoardListCnt" parameterType="ManageInfoBoardVO" resultType="egovMap">
+		SELECT  count(*) totalTotCnt
+        	  , CEIL(count(*) / #{rows}) totalPage
+		  FROM  LIBRO_INFO_BOARD
+		 WHERE  1=1
+	  ORDER BY  NO ASC
+	</select>
+	
+ 	<insert id="insertManageInfoBoardJqGridList" parameterType="map">
+	<selectKey resultType="String" keyProperty="no" order="BEFORE">
+		SELECT NVL(MAX(NO),0)+1 
+		FROM LIBRO_INFO_BOARD
+	</selectKey>
+	INSERT INTO LIBRO_INFO_BOARD
+	(NO,
+	 TITLE,
+	 CONTENT,
+	 IMG_DES,
+	 EVENT_DATE,
+	 TYPE,
+	 MEMBER_ID)
+	VALUES
+	(#{no},
+	#{title},
+	#{content},        
+	#{imgDes, jdbcType=VARCHAR},
+	TO_DATE(#{eventDate,jdbcType=DATE}, 'YYYY/MM/DD hh24:mi:ss'),  
+	#{type},
+	#{memberId})
+	</insert>
+	
+	<update id="updateManageInfoBoardJqGridList" parameterType="map">
+	UPDATE LIBRO_INFO_BOARD
+	SET TITLE = #{title},
+		CONTENT  = #{content},
+		IMG_DES  = #{imgDes, jdbcType=VARCHAR},
+		EVENT_DATE = TO_DATE(#{eventDate,jdbcType=DATE}, 'YYYY/MM/DD hh24:mi:ss'),  
+		TYPE  = #{type},
+		MEMBER_ID  = #{memberId}
+	WHERE NO = #{no}	
+	</update>
+	<delete id ="deleteManageInfoBoardJqGridList" parameterType="map">
+	DELETE FROM LIBRO_INFO_BOARD WHERE NO=#{no}
+	</delete> 
+</mapper>

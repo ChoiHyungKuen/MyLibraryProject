@@ -1,0 +1,171 @@
+/*-----------------------------------------------------------------------------------
+
+    Template Name: Susis Library & Book Showcase HTML5 Template,
+    Template URI: http://bootexperts.com
+    Description: This is html5 template
+    Author: BootExperts
+    Author URI: http://bootexperts.com
+    Version: 1.0
+
+-----------------------------------------------------------------------------------
+    
+    CSS INDEX
+    ===================
+    1. Google font
+	2. Theme Default CSS (body, link color, section etc)   
+-----------------------------------------------------------------------------------*/
+
+
+/*--------------------
+1. Google font
+----------------------*/
+
+@import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700');
+
+/*------------------
+2. Theme Default CSS
+-------------------*/
+
+.alignleft {
+    float: left;
+    margin-right: 15px;
+}
+
+.alignright {
+    float: right;
+    margin-left: 15px;
+}
+
+.aligncenter {
+    display: block;
+    margin: 0 auto 15px;
+}
+
+a {
+    color: #5d5d5d;
+    -webkit-transition: 0.3s;
+    transition: 0.3s;
+}
+
+a:focus,
+a:hover {
+    outline: 0 solid;
+    text-decoration: none
+}
+
+img {
+    height: auto;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 0 0 20px;
+    font-weight: 500;
+    color: #5b5b5b;
+}
+
+h2 {
+    font-weight: 300;
+}
+
+html,
+body {
+    height: 100%
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    color: #5b5b5b;
+    line-height: 1.5;
+}
+
+
+/* Remove Chrome Input Field's Unwanted Yellow Background Color */
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+}
+
+.text-overflow  {
+	/* 한 줄 자르기 */
+	display: inline-block;
+	width: 180px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis; 
+}
+.review {
+	border : 1px solid black; 
+	height:60px;
+}
+.review:after { content:""; clear:both; display:block; }
+
+.user-review-counter {
+	
+	float:right;
+  	background:rgba(255,0,0,0.5);
+  	border-radius: 0.5em;
+  	padding: 0 .6em 0 .6em;
+  	font-size: 0.6em;
+  	margin-left : 5px;
+  	margin-right : 10px;
+  	margin-top : 30px;
+}
+.user-review-content{
+	width:90%;
+	float:left;
+	margin-left:8px;
+	resize:none;
+}
+#reviewCounter {
+	float:left;
+	width:5%;
+  	background:rgba(255,0,0,0.5);
+  	border-radius: 0.5em;
+  	padding: 0 .6em 0 .6em;
+  	font-size: 0.6em;
+  	margin-left : 5px;
+  	margin-right : 10px;
+  	margin-top : 40px;
+}
+#reviewContent {
+	float:left;
+	width:45%;
+	margin-left:8px;
+	resize:none;
+	height:100%;
+}
+.review.a {
+	float:right;
+	height:100%;
+	padding-top:15px;
+}
+.review-content {
+	float:left;
+	padding-top : 10px;
+	margin-left : 10px;
+	height:100%;
+	vertical-align:sub;
+	word-break:break-all; 
+}
+
+.review-member {
+	float:right;
+	height:100%;
+	vertical-align:sub;
+	margin-right:10px;
+}
+.review-buttonGroup {
+	float:right;
+	height:100%;
+}
+.review-buttonGroup .btn.btn-danger {
+	margin-left:10px;
+}

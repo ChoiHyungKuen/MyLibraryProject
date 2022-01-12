@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.example.calendar.service.impl.CalendarMapper">
+	
+	<select id ="selectCalendarInfoList" resultType="egovMap">
+      SELECT
+         ID, 
+         TITLE,
+         DESCRIPTION,
+         TO_CHAR(START_DATE,'YYYY-MM-DD') START_DATE,
+         TO_CHAR(END_DATE,'YYYY-MM-DD') END_DATE
+      FROM LIBRO_CALENDAR
+      ORDER BY ID
+   </select>
+   
+   
+	<insert id="insertCalendarInfo" parameterType="hashmap">
+	<selectKey resultType="String" keyProperty="id" order="BEFORE">
+		SELECT NVL(MAX(ID),0)+1 
+		FROM LIBRO_CALENDAR
+	</selectKey>
+	INSERT INTO LIBRO_CALENDAR
+	(ID,
+	 TITLE,
+	 DESCRIPTION,
+	 START_DATE,
+	 END_DATE)
+	VALUES
+	(#{id},
+	#{title},
+	#{description},        
+	TO_DATE(#{startDate,jdbcType=DATE}, 'YYYY/MM/DD hh24:mi:ss'),
+	TO_DATE(#{endDate,jdbcType=DATE}, 'YYYY/MM/DD hh24:mi:ss'))
+	</insert>
+	
+	<update id="updateCalendarInfo" parameterType="hashmap">
+	UPDATE LIBRO_CALENDAR
+	SET TITLE = #{title},
+		DESCRIPTION = #{description},
+		START_DATE = TO_DATE(#{startDate,jdbcType=DATE}, 'YYYY/MM/DD hh24:mi:ss'),
+		END_DATE = TO_DATE(#{endDate,jdbcType=DATE}, 'YYYY/MM/DD hh24:mi:ss')  
+	WHERE ID = #{id}
+	</update>
+
+	<delete id ="deleteCalendarInfo" parameterType="hashmap">
+	DELETE FROM LIBRO_CALENDAR WHERE ID = #{id}
+	</delete> 
+</mapper>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.example.login.service.impl.LoginMapper">
+	
+	<select id="actionLogin" parameterType="loginVO" resultType="loginVO">
+		SELECT MEMBER_ID id, name, password, UNIQ_ID uniqId 
+		FROM LIBRO_MEMBER
+		WHERE MEMBER_ID = #{id}
+		AND PASSWORD = #{password}
+	</select>
+	
+	<select id="selectNotification" parameterType="String" resultType="EgovMap">
+		SELECT ID, MEMBER_ID, CONTENT, TO_CHAR(CREATED_DATE,'YYYY"년"MM"월"DD"일"') CREATED_DATE
+		FROM LIBRO_NOTIFICATION
+		WHERE MEMBER_ID = #{_parameter}
+		ORDER BY CREATED_DATE DESC
+	</select>
+	
+	
+	<select id="selectIsMemberById" parameterType="String" resultType="java.lang.Integer">
+		SELECT COUNT(*)
+		FROM LIBRO_MEMBER
+		WHERE MEMBER_ID = #{_parameter}
+	</select>
+	
+	<select id="getUserInfoById" parameterType="String" resultType="loginVO">
+		SELECT MEMBER_ID id, name, password, UNIQ_ID uniqId 
+		FROM LIBRO_MEMBER
+		WHERE MEMBER_ID = #{_parameter}
+	</select>
+	
+	<select id="getAuthoritiesById" parameterType="String" resultType="String"> 
+		SELECT AUTHORITY
+		FROM LIBRO_AUTHORITIES
+		WHERE MEMBER_ID = #{_parameter} 
+	</select> 
+	
+   	
+	<delete id ="deleteNotification" parameterType="String">
+	DELETE FROM LIBRO_NOTIFICATION
+	WHERE ID = #{_parameter}
+	</delete> 
+</mapper>

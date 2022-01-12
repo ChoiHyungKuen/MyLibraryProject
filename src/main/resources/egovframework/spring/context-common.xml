@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+	<context:component-scan base-package="egovframework">
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+
+	<bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>classpath:/egovframework/message/message-common</value>
+				<value>classpath:/egovframework/rte/fdl/idgnr/messages/idgnr</value>
+				<value>classpath:/egovframework/rte/fdl/property/messages/properties
+				</value>
+			</list>
+		</property>
+		<property name="cacheSeconds">
+			<value>60</value>
+		</property>
+	</bean>
+
+	<bean id="leaveaTrace" class="egovframework.rte.fdl.cmmn.trace.LeaveaTrace">
+		<property name="traceHandlerServices">
+			<list>
+				<ref bean="traceHandlerService" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="traceHandlerService"
+		class="egovframework.rte.fdl.cmmn.trace.manager.DefaultTraceHandleManager">
+		<property name="reqExpMatcher">
+			<ref bean="antPathMater" />
+		</property>
+		<property name="patterns">
+			<list>
+				<value>*</value>
+			</list>
+		</property>
+		<property name="handlers">
+			<list>
+				<ref bean="defaultTraceHandler" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="egovMessageSource" class="egovframework.example.cmmn.EgovMessageSource">
+		<property name="reloadableResourceBundleMessageSource">	<!-- 함수이름 -->
+			<ref bean="messageSource" /> 
+		</property>
+	</bean>
+	<bean id="antPathMater" class="org.springframework.util.AntPathMatcher" />
+	<bean id="defaultTraceHandler"
+		class="egovframework.rte.fdl.cmmn.trace.handler.DefaultTraceHandler" />
+	<!-- custom multi file resolver -->
+
+	<bean id="local.MultiCommonsMultipartResolver" class="egovframework.example.cmmn.web.EgovMultipartResolver">
+
+		<property name="maxUploadSize" value="10000000" />
+
+		<property name="maxInMemorySize" value="10000000" />
+
+	</bean> 
+
+	<alias name="local.MultiCommonsMultipartResolver" alias="multipartResolver" />
+
+	<bean name="egovFileIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl"
+		destroy-method="destroy">
+
+		<property name="blockSize" value="10" />
+
+		<property name="table" value="COMTECOPSEQ" />
+
+		<property name="tableName" value="FILE_ID" />
+	</bean>
+
+	<!-- 이메일 관련 -->
+	<bean id="javaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+	    <property name="host" value="smtp.naver.com" />
+	    <property name="port" value="587" />
+	    <property name="username" value="gudrms1592@naver.com" />
+	    <property name="password" value="gudrms646242!" />
+    	<property name="javaMailProperties">
+        	<props>
+        	    <prop key="mail.smtp.ssl.trust">smtp.naver.com</prop>
+        	    <prop key="mail.smtp.starttls.enable">true</prop>
+        	    <prop key="mail.smtp.auth">true</prop>
+        	</props>
+    	</property>
+	</bean>
+	<bean id="findMemberInfoService" class="egovframework.example.findMemberInfo.service.impl.FindMemberInfoServiceImpl">
+    <property name="javaMailSender" ref="javaMailSender" />
+</bean>
+
+</beans>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE form-validation PUBLIC 
+    "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.1//EN" 
+    "http://jakarta.apache.org/commons/dtds/validator_1_1.dtd">
+
+<form-validation>
+
+    <formset>
+        <form name="sampleVO">
+        	<field property="name" depends="required">
+        		<arg0 key="title.sample.name" />
+			</field>
+			<field property="description" depends="required">
+                <arg0 key="title.sample.description" />
+            </field>
+        	<field property="regUser" depends="required">
+        		<arg0 key="title.sample.regUser" />
+			</field>
+        </form>
+        <form name="manageBooksVO">
+        	<field property="title" depends="required, maxlength">
+        			<arg0 key="책 제목" />
+        			<arg1 key="256" />
+        			<var>
+						<var-name>maxlength</var-name>
+						<var-value>256</var-value>
+					</var>
+        	</field>
+        	<field property="author" depends="required">
+        			<arg0 key="작가" />
+        	</field>
+        	<field property="publisher" depends="required">
+        			<arg0 key="출판사" />
+        	</field>
+        	<field property="publishDate" depends="required">
+        			<arg0 key="출판일" />
+       	 	</field>
+        	<field property="content" depends="required, maxlength">
+        			<arg0 key="내용" />
+        			<arg1 key="500" />
+        			<var>
+						<var-name>maxlength</var-name>
+						<var-value>500</var-value>
+					</var>
+        	</field>
+        	<field property="bookPage" depends="required, integer">
+        			<arg0 key="책 페이지" resource="true" />
+        			<arg1 key="책 페이지" />
+        	</field>
+        	<field property="callNumber" depends="required">
+        			<arg0 key="청구기호"/>
+        	</field>
+        </form>        
+        
+        <form name="memberVO">
+        	<field property="name" depends="required">
+        			<arg0 key="이름" />
+        	</field>
+        	<field property="memberId" depends="required, maxlength">
+        			<arg0 key="아이디" />
+        			<arg1 key="15" />
+        			<var>
+						<var-name>maxlength</var-name>
+						<var-value>15</var-value>
+					</var>
+        	</field>
+        	<field property="memberId" depends="minlength">
+        			<arg0 key="아이디" />
+        			<arg1 key="5" />
+        			<var>
+						<var-name>minlength</var-name>
+						<var-value>5</var-value>
+					</var>
+        	</field>
+        	<field property="password" depends="required , maxlength">
+        			<arg0 key="비밀번호" />
+        			<arg1 key="15" />
+        			<var>
+						<var-name>maxlength</var-name>
+						<var-value>15</var-value>
+					</var>
+        	</field>
+        	<field property="password" depends="minlength">
+        			<arg0 key="비밀번호" />
+        			<arg1 key="4" />
+        			<var>
+						<var-name>minlength</var-name>
+						<var-value>4</var-value>
+					</var>
+        	</field>
+        	<field property="emailId" depends="required">
+        			<arg0 key="이메일" />
+        	</field>
+        	<field property="postCode" depends="required">
+        			<arg0 key="주소"  />
+        	</field>
+        </form>
+    </formset>
+
+</form-validation>

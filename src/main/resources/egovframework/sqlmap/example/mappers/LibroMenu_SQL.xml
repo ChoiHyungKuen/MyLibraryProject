@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.example.nav.service.impl.NavMapper">
+	
+	<!-- 메인 조회 -->
+<select id ="selectMainMenu" resultType="egovMap">
+      SELECT
+         MENU_ID, 
+         MENU_NM,
+         MENU_URL,
+         MENU_CLASS,
+         USE_YN,
+         SORT_NO,
+         INNER_LINK_YN
+      FROM LIBRO_MENU
+      WHERE 1 =1 
+         AND USE_YN ='Y'
+      ORDER BY SORT_NO
+   </select>
+</mapper>
